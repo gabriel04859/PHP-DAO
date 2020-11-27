@@ -37,7 +37,11 @@ class User{
 		$this->password = $password;
 	}
 
-	
+	public function __contruct($name, $email, $password){
+		$this->name = $name;
+		$this->email = $email;
+		$this->password = $password;
+	}
 
 	public function getById($id){
 		$sql = new Sql();
@@ -45,11 +49,7 @@ class User{
 			":id"=>$id));
 
 		if (count($result) > 0) {
-			$row = $result[0];
-			$this->setIdUser($row['id']);
-			$this->setName($row['name']);
-			$this->setEmail($row['email']);
-			$this->setPassword($row['password']);
+			$this->setData($result[0]);
 		}
 	}
 
@@ -73,16 +73,53 @@ public function login($email , $password){
 		':PASSWORD'=>$password));
 
 	if (count($result) > 0){
-		$row = $result[0];
-		$this->setIdUser($row['id']);
-		$this->setName($row['name']);
-		$this->setEmail($row['email']);
-		$this->setPassword($row['password']);
+		$this->setData($result[0]);
 		
 	}else{
 		throw new Exception("Email ou senha incorreto");
 		
 	}
+}
+
+public function insertUser(){
+	$sql = new Sql();
+	$result = $sql->select("CALL sp_user_insert(:NAME, :EMAIL, :PASSWORD)",array(
+		':NAME'=>$this->getName(),
+		':EMAIL'=>$this->getEmail(),
+		':PASSWORD'=>$this->getPassword()
+	));
+	if (count($result) > 0) {
+		$this->setData($result);
+		# code...
+	}
+}
+
+public function update($id,$name, $email, $password){;
+	$sql = new Sql();
+	$sql->query("UPDATE tb_user SET name :NAME, email = :EMAIL, $password = :PASSWORD WHERE id = :ID", array(
+		':ID'=>$id,
+		':NAME'=>$name,
+		':EMAIL'=>$email,
+		':PASSWORD'=>$password
+
+	));
+
+
+}
+
+public function delete(){
+	$sql = new Sql();
+	$sql->query("DELETE FROM tb_user WHERE id = :ID", array(
+		':ID'=>$this->getIdUser()
+	));
+}
+
+private function setData($data){
+	$this->setIdUser($data['id']);
+	$this->setName($data['name']);
+	$this->setEmail($data['email']);
+	$this->setPassword($data['password']);
+	var_dump($data);
 }
 
 }

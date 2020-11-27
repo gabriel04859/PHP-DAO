@@ -3,6 +3,6 @@ require_once("Config.php");
 
 
 $user = new User();
-$user->login("gabril@gmail.com","123456");
-var_dump($user);
+$user->update(1,"Gabriel Ribeiro","g@gmail.com","123456789");
+
 ?>
