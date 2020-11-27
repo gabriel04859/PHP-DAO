@@ -2,5 +2,7 @@
 require_once("Config.php");
 
 
-$sql = new Sql();
+$user = new User();
+$user->login("gabril@gmail.com","123456");
+var_dump($user);
 ?>
